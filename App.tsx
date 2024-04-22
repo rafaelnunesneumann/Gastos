@@ -1,8 +1,11 @@
 import React from "react";
-import MainScreen from "./src/screens/MainScreen";
-import LoginScreen from "./src/screens/LoginScreen";
-import SignupScreen from "./src/screens/SignupScreen";
+import MyStackNavigator from "./src/navigation/StackNavigator";
+import { NavigationContainer } from "@react-navigation/native";
 
 export default function App() {
-  return <SignupScreen />;
+  return (
+    <NavigationContainer>
+      <MyStackNavigator />
+    </NavigationContainer>
+  );
 }

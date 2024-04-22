@@ -5,52 +5,55 @@ import Button from "../components/Button";
 
 import Icon from "react-native-vector-icons/AntDesign";
 
-const SignupScreen = () => {
+const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Criar conta</Text>
-        <Text style={styles.subtitle}>
-          Faça seu cadastro e começe a controlar os seus gastos
-        </Text>
-      </View>
-
-      <View style={styles.signupSection}>
-        <MyTextInput
-          inputStyle={styles.inputStyle}
-          placeholder="Email"
-          onSelectStyle={styles.onSelectStyle}
-        />
-        <MyTextInput
-          inputStyle={styles.inputStyle}
-          placeholder="Senha"
-          onSelectStyle={styles.onSelectStyle}
-        />
-        <View style={styles.signupView}>
-          <Button
-            buttonStyle={styles.buttonSignup}
-            textButton={"Cadastrar"}
-            textStyle={styles.buttonSignupText}
-          />
-          <Button
-            buttonStyle={styles.buttonLogin}
-            textButton={"Entre na sua conta"}
-            textStyle={styles.buttonLoginText}
-          />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.title}>Criar conta</Text>
+          <Text style={styles.subtitle}>
+            Faça seu cadastro e começe a controlar os seus gastos
+          </Text>
         </View>
-      </View>
 
-      <View style={styles.googleSection}>
-        <Text style={styles.textContinue}>Ou continue com</Text>
-        <View style={styles.iconsView}>
-          <View style={styles.iconContainer}>
-            <Icon name="google" size={25} />
+        <View style={styles.signupSection}>
+          <MyTextInput
+            inputStyle={styles.inputStyle}
+            placeholder="Email"
+            onSelectStyle={styles.onSelectStyle}
+          />
+          <MyTextInput
+            inputStyle={styles.inputStyle}
+            placeholder="Senha"
+            onSelectStyle={styles.onSelectStyle}
+          />
+          <View style={styles.signupView}>
+            <Button
+              buttonStyle={styles.buttonSignup}
+              textButton={"Cadastrar"}
+              textStyle={styles.buttonSignupText}
+            />
+            <Button
+              buttonStyle={styles.buttonLogin}
+              textButton={"Entre na sua conta"}
+              textStyle={styles.buttonLoginText}
+              onPress={() => navigation.navigate("Login")}
+            />
           </View>
-          <View style={styles.iconContainer}>
-            <Icon name="facebook-square" size={25} />
-          </View>
-          <View style={styles.iconContainer}>
-            <Icon name="apple1" size={25} />
+        </View>
+
+        <View style={styles.googleSection}>
+          <Text style={styles.textContinue}>Ou continue com</Text>
+          <View style={styles.iconsView}>
+            <View style={styles.iconContainer}>
+              <Icon name="google" size={25} />
+            </View>
+            <View style={styles.iconContainer}>
+              <Icon name="facebook-square" size={25} />
+            </View>
+            <View style={styles.iconContainer}>
+              <Icon name="apple1" size={25} />
+            </View>
           </View>
         </View>
       </View>

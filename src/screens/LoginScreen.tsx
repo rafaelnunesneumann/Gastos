@@ -5,57 +5,60 @@ import Button from "../components/Button";
 
 import Icon from "react-native-vector-icons/AntDesign";
 
-const LoginScreen = () => {
+const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Login</Text>
-        <Text style={styles.subtitle}>
-          Bem vindo de volta! Sentimos a sua falta!
-        </Text>
-      </View>
-
-      <View style={styles.loginSection}>
-        <MyTextInput
-          inputStyle={styles.inputStyle}
-          placeholder="Email"
-          onSelectStyle={styles.onSelectStyle}
-        />
-        <MyTextInput
-          inputStyle={styles.inputStyle}
-          placeholder="Senha"
-          onSelectStyle={styles.onSelectStyle}
-        />
-        <Button
-          buttonStyle={styles.forgotPasswordButton}
-          textButton={"Esqueceu a sua senha?"}
-          textStyle={styles.forgotPasswordText}
-        />
-        <View style={styles.loginView}>
-          <Button
-            buttonStyle={styles.buttonLogin}
-            textButton={"Entrar"}
-            textStyle={styles.buttonLoginText}
-          />
-          <Button
-            buttonStyle={styles.buttonSignup}
-            textButton={"Criar uma nova conta"}
-            textStyle={styles.buttonSignupText}
-          />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.title}>Login</Text>
+          <Text style={styles.subtitle}>
+            Bem vindo de volta! Sentimos a sua falta!
+          </Text>
         </View>
-      </View>
 
-      <View style={styles.googleSection}>
-        <Text style={styles.textContinue}>Ou continue com</Text>
-        <View style={styles.iconsView}>
-          <View style={styles.iconContainer}>
-            <Icon name="google" size={25} />
+        <View style={styles.loginSection}>
+          <MyTextInput
+            inputStyle={styles.inputStyle}
+            placeholder="Email"
+            onSelectStyle={styles.onSelectStyle}
+          />
+          <MyTextInput
+            inputStyle={styles.inputStyle}
+            placeholder="Senha"
+            onSelectStyle={styles.onSelectStyle}
+          />
+          <Button
+            buttonStyle={styles.forgotPasswordButton}
+            textButton={"Esqueceu a sua senha?"}
+            textStyle={styles.forgotPasswordText}
+          />
+          <View style={styles.loginView}>
+            <Button
+              buttonStyle={styles.buttonLogin}
+              textButton={"Entrar"}
+              textStyle={styles.buttonLoginText}
+            />
+            <Button
+              buttonStyle={styles.buttonSignup}
+              textButton={"Criar uma nova conta"}
+              textStyle={styles.buttonSignupText}
+              onPress={() => navigation.navigate("Signup")}
+            />
           </View>
-          <View style={styles.iconContainer}>
-            <Icon name="facebook-square" size={25} />
-          </View>
-          <View style={styles.iconContainer}>
-            <Icon name="apple1" size={25} />
+        </View>
+
+        <View style={styles.googleSection}>
+          <Text style={styles.textContinue}>Ou continue com</Text>
+          <View style={styles.iconsView}>
+            <View style={styles.iconContainer}>
+              <Icon name="google" size={25} />
+            </View>
+            <View style={styles.iconContainer}>
+              <Icon name="facebook-square" size={25} />
+            </View>
+            <View style={styles.iconContainer}>
+              <Icon name="apple1" size={25} />
+            </View>
           </View>
         </View>
       </View>
