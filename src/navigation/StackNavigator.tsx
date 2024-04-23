@@ -6,7 +6,9 @@ import SignupScreen from "../screens/SignupScreen";
 
 const Stack = createStackNavigator();
 
-const MyStackNavigator = () => {
+const MyStackNavigator: React.FC<{ setIsLoggedIn: Function }> = ({
+  setIsLoggedIn,
+}) => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -15,7 +17,9 @@ const MyStackNavigator = () => {
       }}
     >
       <Stack.Screen name="Main" component={MainScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Login">
+        {(props) => <LoginScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+      </Stack.Screen>
       <Stack.Screen name="Signup" component={SignupScreen} />
     </Stack.Navigator>
   );

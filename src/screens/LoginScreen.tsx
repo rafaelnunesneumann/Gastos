@@ -5,7 +5,10 @@ import Button from "../components/Button";
 
 import Icon from "react-native-vector-icons/AntDesign";
 
-const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
+  navigation,
+  setIsLoggedIn,
+}) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
@@ -37,6 +40,7 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
               buttonStyle={styles.buttonLogin}
               textButton={"Entrar"}
               textStyle={styles.buttonLoginText}
+              onPress={() => setIsLoggedIn(true)}
             />
             <Button
               buttonStyle={styles.buttonSignup}
