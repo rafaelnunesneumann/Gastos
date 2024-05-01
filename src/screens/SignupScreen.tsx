@@ -6,28 +6,47 @@ import Icon from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 
 const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
-
-  const handleRegister = async ({ email, password }: {email: string, password: string}) => {
-    try {
-        const response = await fetch('http://localhost:3000/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-        console.log(data); // Aqui você pode lidar com a resposta do servidor
-    } catch (error) {
-        console.error('Erro ao registrar usuário:', error);
+  const handleRegister = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
+    if (!verifyEmail(email)) {
+      alert("Digite um email valido");
+      throw new Error("Email invalido");
     }
-};
+    try {
+      axios
+        .post("http://192.168.0.139:3000/register", {
+          method: "POST",
+          data: {
+            email: email,
+            password: password,
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.error(error.response.data);
+          }
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('')
+  const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+  const verifyEmail = (email: string): boolean => {
+    return reg.test(email);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -45,15 +64,17 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             placeholder="Email"
             onSelectStyle={styles.onSelectStyle}
             onChangeText={(text) => {
-              setEmail(text)
+              setEmail(text);
             }}
+            autoComplete={"email"}
+            inputMode={"email"}
           />
           <MyTextInput
             inputStyle={styles.inputStyle}
             placeholder="Senha"
             onSelectStyle={styles.onSelectStyle}
             onChangeText={(text) => {
-              setPassword(text)
+              setPassword(text);
             }}
           />
           <View style={styles.signupView}>
@@ -61,7 +82,7 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
               buttonStyle={styles.buttonSignup}
               textButton={"Cadastrar"}
               textStyle={styles.buttonSignupText}
-              onPress={() => handleRegister({email, password})}
+              onPress={() => handleRegister({ email, password })}
             />
             <Button
               buttonStyle={styles.buttonLogin}

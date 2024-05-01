@@ -12,13 +12,17 @@ interface InputProps {
   placeholder: string;
   onSelectStyle: StyleProp<ViewStyle>;
   onChangeText?: ((text: string) => void) | undefined;
+  autoComplete?: any;
+  inputMode?: any;
 }
 
 const MyTextInput: React.FC<InputProps> = ({
   inputStyle,
   placeholder,
   onSelectStyle,
-  onChangeText
+  onChangeText,
+  autoComplete = "off",
+  inputMode = "text",
 }) => {
   const textInputRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -40,6 +44,9 @@ const MyTextInput: React.FC<InputProps> = ({
         onBlur={handleBlur}
         placeholder={placeholder}
         onChangeText={onChangeText}
+        autoComplete={autoComplete}
+        autoCapitalize="none"
+        inputMode={inputMode}
       />
     </View>
   );
