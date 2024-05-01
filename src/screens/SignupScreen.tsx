@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import MyTextInput from "../components/MyTextInput";
 import Button from "../components/Button";
-
 import Icon from "react-native-vector-icons/AntDesign";
+import axios from "axios";
 
 const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+
+  const handleRegister = async ({ email, password }: {email: string, password: string}) => {
+    try {
+        const response = await fetch('http://localhost:3000/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        console.log(data); // Aqui você pode lidar com a resposta do servidor
+    } catch (error) {
+        console.error('Erro ao registrar usuário:', error);
+    }
+};
+
+  
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('')
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
@@ -21,17 +44,24 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             inputStyle={styles.inputStyle}
             placeholder="Email"
             onSelectStyle={styles.onSelectStyle}
+            onChangeText={(text) => {
+              setEmail(text)
+            }}
           />
           <MyTextInput
             inputStyle={styles.inputStyle}
             placeholder="Senha"
             onSelectStyle={styles.onSelectStyle}
+            onChangeText={(text) => {
+              setPassword(text)
+            }}
           />
           <View style={styles.signupView}>
             <Button
               buttonStyle={styles.buttonSignup}
               textButton={"Cadastrar"}
               textStyle={styles.buttonSignupText}
+              onPress={() => handleRegister({email, password})}
             />
             <Button
               buttonStyle={styles.buttonLogin}
