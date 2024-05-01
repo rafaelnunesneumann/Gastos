@@ -15,7 +15,7 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   }) => {
     if (!verifyEmail(email)) {
       alert("Digite um email valido");
-      throw new Error("Email invalido");
+      return;
     }
     try {
       axios
@@ -27,11 +27,16 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
           },
         })
         .then((response) => {
-          console.log(response.data);
+          if (response.status === 200) {
+            alert("Usuario cadastrado com sucesso!");
+            clearInputs();
+          }
         })
         .catch((error) => {
           if (error.response) {
-            console.error(error.response.data);
+            if (error.response.status === 500) {
+              alert("Esse email ja esta cadastrado!");
+            }
           }
         });
     } catch (err) {
@@ -46,6 +51,11 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   const verifyEmail = (email: string): boolean => {
     return reg.test(email);
+  };
+
+  const clearInputs = () => {
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -68,6 +78,7 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             }}
             autoComplete={"email"}
             inputMode={"email"}
+            value={email}
           />
           <MyTextInput
             inputStyle={styles.inputStyle}
@@ -76,6 +87,8 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             onChangeText={(text) => {
               setPassword(text);
             }}
+            secureTextEntry={true}
+            value={password}
           />
           <View style={styles.signupView}>
             <Button

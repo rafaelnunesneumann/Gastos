@@ -14,6 +14,8 @@ interface InputProps {
   onChangeText?: ((text: string) => void) | undefined;
   autoComplete?: any;
   inputMode?: any;
+  secureTextEntry?: any;
+  value?: any;
 }
 
 const MyTextInput: React.FC<InputProps> = ({
@@ -23,6 +25,8 @@ const MyTextInput: React.FC<InputProps> = ({
   onChangeText,
   autoComplete = "off",
   inputMode = "text",
+  secureTextEntry = false,
+  value,
 }) => {
   const textInputRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -47,6 +51,8 @@ const MyTextInput: React.FC<InputProps> = ({
         autoComplete={autoComplete}
         autoCapitalize="none"
         inputMode={inputMode}
+        secureTextEntry={secureTextEntry}
+        value={value}
       />
     </View>
   );
