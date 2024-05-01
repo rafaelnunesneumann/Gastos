@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import MyTextInput from "../components/MyTextInput";
 import Button from "../components/Button";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Icon from "react-native-vector-icons/AntDesign";
 
@@ -9,6 +11,53 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
   navigation,
   setIsLoggedIn,
 }) => {
+  const handleLogin = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
+    if (!verifyEmail(email)) {
+      alert("Digite um email valido");
+      return;
+    }
+    try {
+      axios
+        .post("http://192.168.0.139:3000/login", {
+          method: "POST",
+          data: {
+            email: email,
+            password: password,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setIsLoggedIn(true);
+            AsyncStorage.setItem("token", response.data.token);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            if (error.response.status === 500) {
+              alert(error.response.data.message);
+            }
+          }
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+  const verifyEmail = (email: string): boolean => {
+    return reg.test(email);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
@@ -24,11 +73,15 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
             inputStyle={styles.inputStyle}
             placeholder="Email"
             onSelectStyle={styles.onSelectStyle}
+            inputMode={"email"}
+            onChangeText={(value) => setEmail(value)}
           />
           <MyTextInput
             inputStyle={styles.inputStyle}
             placeholder="Senha"
             onSelectStyle={styles.onSelectStyle}
+            secureTextEntry={true}
+            onChangeText={(value) => setPassword(value)}
           />
           <Button
             buttonStyle={styles.forgotPasswordButton}
@@ -40,7 +93,7 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
               buttonStyle={styles.buttonLogin}
               textButton={"Entrar"}
               textStyle={styles.buttonLoginText}
-              onPress={() => setIsLoggedIn(true)}
+              onPress={() => handleLogin({ email, password })}
             />
             <Button
               buttonStyle={styles.buttonSignup}
