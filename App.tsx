@@ -6,6 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { LoginProvider, useLogin } from "./src/context/LoginContext";
 
+const BASE_URL = process.env.BASE_URL;
+
 export default function App() {
   return (
     <LoginProvider>
@@ -23,7 +25,7 @@ function AppContent() {
       try {
         const token = await AsyncStorage.getItem("token");
         axios
-          .get("http://192.168.0.140:3000/auth", {
+          .get(`${BASE_URL}/auth`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,

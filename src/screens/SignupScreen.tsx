@@ -5,6 +5,8 @@ import Button from "../components/Button";
 import Icon from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 
+const BASE_URL = process.env.BASE_URL;
+
 const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const handleRegister = async ({
     email,
@@ -19,7 +21,7 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     }
     try {
       axios
-        .post("http://192.168.0.140:3000/register", {
+        .post(`${BASE_URL}/register`, {
           method: "POST",
           data: {
             email: email,

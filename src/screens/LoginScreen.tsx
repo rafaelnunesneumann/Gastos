@@ -7,6 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Icon from "react-native-vector-icons/AntDesign";
 
+const BASE_URL = process.env.BASE_URL;
+
 const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
   navigation,
   setIsLoggedIn,
@@ -24,7 +26,7 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
     }
     try {
       axios
-        .post("http://192.168.0.140:3000/login", {
+        .post(`${BASE_URL}/login`, {
           method: "POST",
           data: {
             email: email,
