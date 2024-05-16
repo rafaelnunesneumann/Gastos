@@ -19,7 +19,7 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     }
     try {
       axios
-        .post("http://192.168.0.139:3000/register", {
+        .post("http://192.168.0.140:3000/register", {
           method: "POST",
           data: {
             email: email,

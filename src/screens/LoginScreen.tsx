@@ -24,7 +24,7 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
     }
     try {
       axios
-        .post("http://192.168.0.139:3000/login", {
+        .post("http://192.168.0.140:3000/login", {
           method: "POST",
           data: {
             email: email,
