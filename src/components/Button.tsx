@@ -13,7 +13,8 @@ interface ButtonProps {
   buttonStyle: StyleProp<ViewStyle>;
   textButton: string;
   textStyle: StyleProp<TextStyle>;
-  isLoading?: boolean
+  isLoading?: boolean;
+  loadingColor?: string;
   onPress?: (event: GestureResponderEvent) => void;
 }
 
@@ -22,11 +23,16 @@ const Button: React.FC<ButtonProps> = ({
   textButton,
   textStyle,
   isLoading,
+  loadingColor,
   onPress,
 }) => {
   return (
     <TouchableOpacity style={buttonStyle} onPress={onPress}>
-      {isLoading ? <ActivityIndicator /> : <Text style={textStyle}>{textButton}</Text>}
+      {isLoading ? (
+        <ActivityIndicator color={loadingColor} />
+      ) : (
+        <Text style={textStyle}>{textButton}</Text>
+      )}
     </TouchableOpacity>
   );
 };

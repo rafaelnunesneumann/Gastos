@@ -20,8 +20,10 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
     email: string;
     password: string;
   }) => {
+    setIsLoading(true);
     if (!verifyEmail(email)) {
       alert("Digite um email valido");
+      setIsLoading(false);
       return;
     }
     try {
@@ -45,6 +47,9 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
               alert(error.response.data.message);
             }
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } catch (err) {
       console.log(err);
@@ -53,6 +58,7 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -95,6 +101,8 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
               buttonStyle={styles.buttonLogin}
               textButton={"Entrar"}
               textStyle={styles.buttonLoginText}
+              isLoading={isLoading}
+              loadingColor="white"
               onPress={() => handleLogin({ email, password })}
             />
             <Button

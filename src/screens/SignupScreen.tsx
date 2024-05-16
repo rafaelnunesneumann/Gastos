@@ -15,8 +15,10 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     email: string;
     password: string;
   }) => {
+    setIsLoading(true);
     if (!verifyEmail(email)) {
       alert("Digite um email valido");
+      setIsLoading(false);
       return;
     }
     try {
@@ -40,6 +42,9 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
               alert("Esse email ja esta cadastrado!");
             }
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } catch (err) {
       console.log(err);
@@ -48,6 +53,7 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -97,6 +103,8 @@ const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
               buttonStyle={styles.buttonSignup}
               textButton={"Cadastrar"}
               textStyle={styles.buttonSignupText}
+              isLoading={isLoading}
+              loadingColor="white"
               onPress={() => handleRegister({ email, password })}
             />
             <Button
