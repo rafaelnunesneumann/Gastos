@@ -32,7 +32,20 @@ const HomeScreen = () => {
 
         <View style={styles.today}>
           <Text style={styles.todayText}>Hoje</Text>
-          <Text style={styles.todayText}>-750.00</Text>
+          <Text style={styles.todayText}>R$ -750.00</Text>
+        </View>
+
+        <View style={styles.card}>
+          <View style={styles.cardStart}>
+            <Text style={styles.cardIcon}>⛽</Text>
+            <View style={styles.cardStartText}>
+              <Text style={styles.cardSpent}>Gasolina</Text>
+              <Text style={styles.cardTime}>10:30</Text>
+            </View>
+          </View>
+          <View style={styles.cardEnd}>
+            <Text style={styles.cardValue}>R$ -750.00</Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -61,12 +74,43 @@ const styles = StyleSheet.create({
   today: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginHorizontal: 10,
+    marginHorizontal: 16,
     marginTop: 100,
   },
   todayText: {
     fontSize: 16,
+    color: '#8C8C8C'
   },
+  card: {
+    padding: 16,
+    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  cardIcon: {
+    fontSize: 30,
+  },
+  cardStart: {
+    width: '50%', 
+    flexDirection: 'row',
+  },
+  cardStartText: {
+    marginLeft: 15, 
+    justifyContent: 'space-between'
+  },
+  cardSpent: {
+    fontSize: 16
+  },
+  cardTime: {
+    fontSize: 14,
+    color: '#8C8C8C'
+  },
+  cardEnd: {
+    paddingRight: 2
+  },
+  cardValue: {
+    color: 'red'
+  }
 });
 
 export default HomeScreen;
