@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/AntDesign";
 
 const BASE_URL = process.env.BASE_URL;
+console.log(BASE_URL);
 
 const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
   navigation,
@@ -39,6 +40,7 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
           if (response.status === 200) {
             setIsLoggedIn(true);
             AsyncStorage.setItem("token", response.data.token);
+            AsyncStorage.setItem("userId", response.data.id);
           }
         })
         .catch((error) => {

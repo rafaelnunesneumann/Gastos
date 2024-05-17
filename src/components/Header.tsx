@@ -2,7 +2,6 @@ import React, { ReactNode } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import { useLogin } from "../context/LoginContext";
-import { LoginProvider } from "../context/LoginContext";
 
 interface HeaderProps {
   children?: ReactNode;
@@ -12,17 +11,15 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
   const { logout } = useLogin();
 
   return (
-    <LoginProvider>
-      <View style={styles.container}>
-        <TouchableOpacity>
-          <Icon name="moon" size={25} />
-        </TouchableOpacity>
-        <Text style={styles.text}>{children}</Text>
-        <TouchableOpacity onPress={() => logout()}>
-          <Icon name="log-out" size={25} />
-        </TouchableOpacity>
-      </View>
-    </LoginProvider>
+    <View style={styles.container}>
+      <TouchableOpacity>
+        <Icon name="moon" size={25} />
+      </TouchableOpacity>
+      <Text style={styles.text}>{children}</Text>
+      <TouchableOpacity onPress={() => logout()}>
+        <Icon name="log-out" size={25} />
+      </TouchableOpacity>
+    </View>
   );
 };
 

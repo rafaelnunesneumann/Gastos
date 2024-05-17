@@ -21,11 +21,10 @@ function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const getUserSpent = async (id: string, token: string) => {
       try {
-        const token = await AsyncStorage.getItem("token");
         axios
-          .get(`${BASE_URL}/auth`, {
+          .get(`${BASE_URL}/spent?userId=${id}`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
@@ -33,15 +32,51 @@ function AppContent() {
           })
           .then((response) => {
             if (response.status === 200) {
-              login();
-              setIsLoading(false);
+              response.data.map((item: object) => {
+                console.log(item);
+              });
             }
           })
           .catch((error) => {
-            logout();
-            setIsLoading(false);
             console.log(error.response.data);
+            console.log(error);
           });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const checkAuth = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        const id = await AsyncStorage.getItem("userId");
+        if (token) {
+          axios
+            .get(`${BASE_URL}/auth`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              console.log("ENTROU");
+              if (response.status === 200) {
+                if (id) {
+                  getUserSpent(id, token);
+                  login();
+                } else {
+                  throw new Error("Id nao encontrado!");
+                }
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              logout();
+            })
+            .finally(() => setIsLoading(false));
+        } else {
+          setIsLoading(false);
+        }
       } catch (error) {
         console.error(error);
       }
