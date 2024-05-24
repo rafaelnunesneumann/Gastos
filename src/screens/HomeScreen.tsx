@@ -23,9 +23,39 @@ function convertToTime(isoString: string): string {
 
 const HomeScreen = () => {
   const { spents } = useSpents();
+
+  const totalSpents = (): string => {
+    let total = 0;
+    spents.map((value) => {
+      total += value.value;
+    });
+    return total.toFixed(2);
+  };
+
+  const totalInteger = (): number => {
+    let total = 0;
+    spents.map((value) => {
+      total += value.value;
+    });
+    return ~~total;
+  };
+
+  const totalCents = (): string => {
+    let total = 0;
+    spents.map((value) => {
+      total += value.value;
+    });
+    const output = total.toFixed(2).toString().split(".")[1];
+    return output;
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <ScrollView style={styles.container} alwaysBounceVertical={false}>
+      <ScrollView
+        style={styles.container}
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+      >
         <Header>GASTOS</Header>
         <View style={styles.month}>
           <Text style={styles.monthSpentText}>Gastos esse mes</Text>
@@ -36,39 +66,49 @@ const HomeScreen = () => {
             <Text style={{ fontSize: 35, marginTop: 6, color: "#d80000" }}>
               -
             </Text>
-            <Text style={{ fontSize: 50, color: "#d80000" }}>750</Text>
+            <Text style={{ fontSize: 50, color: "#d80000" }}>
+              {totalInteger()}
+            </Text>
             <Text style={{ fontSize: 35, marginTop: 6, color: "#d80000" }}>
-              .00
+              .{totalCents()}
             </Text>
           </View>
         </View>
 
         <View style={styles.today}>
           <Text style={styles.todayText}>Hoje</Text>
-          <Text style={styles.todayText}>R$ -750.00</Text>
+          <Text style={styles.todayText}>R$ -{totalSpents()}</Text>
         </View>
 
-        <FlatList
-          data={spents}
-          renderItem={({ item }) => (
-            <View style={styles.card} key={item.id}>
-              <View style={styles.cardStart}>
-                <Text style={styles.cardIcon}>⛽</Text>
-                <View style={styles.cardStartText}>
-                  <Text style={styles.cardSpent}>{item.type}</Text>
-                  <Text style={styles.cardTime}>
-                    {convertToTime(item.created_at)}
-                  </Text>
+        {spents.length > 0 ? (
+          <FlatList
+            data={spents}
+            renderItem={({ item }) => (
+              <View style={styles.card} key={item.id}>
+                <View style={styles.cardStart}>
+                  <Text style={styles.cardIcon}>⛽</Text>
+                  <View style={styles.cardStartText}>
+                    <Text style={styles.cardSpent}>{item.type}</Text>
+                    <Text style={styles.cardTime}>
+                      {convertToTime(item.created_at)}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.cardEnd}>
+                  <Text style={styles.cardValue}>R$ -{item.value}</Text>
                 </View>
               </View>
-              <View style={styles.cardEnd}>
-                <Text style={styles.cardValue}>R$ -{item.value}</Text>
-              </View>
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-          scrollEnabled={false}
-        />
+            )}
+            keyExtractor={(item) => item.id}
+            scrollEnabled={false}
+          />
+        ) : (
+          <View style={{ alignItems: "center", marginTop: 64 }}>
+            <Text style={{ color: "#d80000" }}>
+              Você nao possui nenhum gasto!
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

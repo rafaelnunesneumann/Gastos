@@ -6,6 +6,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Icon from "react-native-vector-icons/AntDesign";
+import SpentControl from "../hooks/SpentControl";
 
 const BASE_URL = process.env.BASE_URL;
 console.log(BASE_URL);
@@ -14,6 +15,17 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
   navigation,
   setIsLoggedIn,
 }) => {
+  const { getUserSpent } = SpentControl();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+  const verifyEmail = (email: string): boolean => {
+    return reg.test(email);
+  };
+
   const handleLogin = async ({
     email,
     password,
@@ -28,44 +40,26 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
       return;
     }
     try {
-      axios
-        .post(`${BASE_URL}/login`, {
-          method: "POST",
-          data: {
-            email: email,
-            password: password,
-          },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            setIsLoggedIn(true);
-            AsyncStorage.setItem("token", response.data.token);
-            AsyncStorage.setItem("userId", response.data.id);
-          }
-        })
-        .catch((error) => {
-          if (error.response) {
-            if (error.response.status === 500) {
-              alert(error.response.data.message);
-            }
-          }
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      const response = await axios.post(`${BASE_URL}/login`, {
+        method: "POST",
+        data: {
+          email: email,
+          password: password,
+        },
+      });
+      if (response.status === 200) {
+        const token = response.data.token;
+        const userID = response.data.id;
+        AsyncStorage.setItem("token", token);
+        AsyncStorage.setItem("userId", userID);
+        await getUserSpent(userID, token);
+        setIsLoggedIn(true);
+      }
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-  const verifyEmail = (email: string): boolean => {
-    return reg.test(email);
   };
 
   return (
@@ -105,7 +99,7 @@ const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({
               textStyle={styles.buttonLoginText}
               isLoading={isLoading}
               loadingColor="white"
-              onPress={() => handleLogin({ email, password })}
+              onPress={async () => await handleLogin({ email, password })}
             />
             <Button
               buttonStyle={styles.buttonSignup}

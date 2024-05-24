@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useState, useContext, ReactNode } from "react";
+import { useSpents } from "./SpentContext";
 
 interface LoginContextType {
   isLoggedIn: boolean;
@@ -14,6 +15,7 @@ export const LoginProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const { setSpents } = useSpents();
 
   const login = () => {
     setIsLoggedIn(true);
@@ -21,6 +23,7 @@ export const LoginProvider: React.FC<{ children: ReactNode }> = ({
 
   const logout = async () => {
     setIsLoggedIn(false);
+    setSpents([]);
     await AsyncStorage.removeItem("token");
   };
 

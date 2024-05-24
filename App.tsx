@@ -6,82 +6,60 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { LoginProvider, useLogin } from "./src/context/LoginContext";
 import { SpentProvider, useSpents } from "./src/context/SpentContext";
+import * as SplashScreen from "expo-splash-screen";
+import SpentControl from "./src/hooks/SpentControl";
 
 const BASE_URL = process.env.BASE_URL;
 
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
   return (
-    <LoginProvider>
-      <SpentProvider>
+    <SpentProvider>
+      <LoginProvider>
         <AppContent />
-      </SpentProvider>
-    </LoginProvider>
+      </LoginProvider>
+    </SpentProvider>
   );
 }
 
 function AppContent() {
   const { isLoggedIn, setIsLoggedIn, login, logout } = useLogin();
   const [isLoading, setIsLoading] = useState(true);
-  const { spents, setSpents } = useSpents();
+  const { getUserSpent } = SpentControl();
 
   useEffect(() => {
-    const getUserSpent = async (id: string, token: string) => {
-      try {
-        axios
-          .get(`${BASE_URL}/spent?userId=${id}`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-            if (response.status === 200) {
-              response.data.map((item: any) => {
-                spents.push(item);
-              });
-            }
-          })
-          .catch((error) => {
-            console.log(error.response.data);
-            console.log(error);
-          });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     const checkAuth = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
         const id = await AsyncStorage.getItem("userId");
+
         if (token) {
-          axios
-            .get(`${BASE_URL}/auth`, {
-              method: "GET",
+          try {
+            const response = await axios.get(`${BASE_URL}/auth`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            })
-            .then((response) => {
-              if (response.status === 200) {
-                if (id) {
-                  getUserSpent(id, token);
-                  login();
-                } else {
-                  throw new Error("Id nao encontrado!");
-                }
+            });
+
+            if (response.status === 200) {
+              if (id) {
+                await getUserSpent(id, token);
+                login();
+              } else {
+                throw new Error("Id não encontrado!");
               }
-            })
-            .catch((error) => {
-              console.log(error);
-              logout();
-            })
-            .finally(() => setIsLoading(false));
-        } else {
-          setIsLoading(false);
+            }
+          } catch (error) {
+            console.error(error);
+            logout();
+          }
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
+        await SplashScreen.hideAsync();
       }
     };
 

@@ -35,6 +35,7 @@ const BottomNav = () => {
           fontSize: 16,
         },
         tabBarStyle: {
+          height: Platform.OS === "android" ? 60 : 75,
           paddingBottom: Platform.OS === "android" ? 0 : 20,
         },
       })}
