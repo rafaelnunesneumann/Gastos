@@ -5,13 +5,16 @@ import MyStackNavigator from "./src/navigation/StackNavigator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { LoginProvider, useLogin } from "./src/context/LoginContext";
+import { SpentProvider, useSpents } from "./src/context/SpentContext";
 
 const BASE_URL = process.env.BASE_URL;
 
 export default function App() {
   return (
     <LoginProvider>
-      <AppContent />
+      <SpentProvider>
+        <AppContent />
+      </SpentProvider>
     </LoginProvider>
   );
 }
@@ -19,6 +22,7 @@ export default function App() {
 function AppContent() {
   const { isLoggedIn, setIsLoggedIn, login, logout } = useLogin();
   const [isLoading, setIsLoading] = useState(true);
+  const { spents, setSpents } = useSpents();
 
   useEffect(() => {
     const getUserSpent = async (id: string, token: string) => {
@@ -32,8 +36,8 @@ function AppContent() {
           })
           .then((response) => {
             if (response.status === 200) {
-              response.data.map((item: object) => {
-                console.log(item);
+              response.data.map((item: any) => {
+                spents.push(item);
               });
             }
           })
@@ -59,7 +63,6 @@ function AppContent() {
               },
             })
             .then((response) => {
-              console.log("ENTROU");
               if (response.status === 200) {
                 if (id) {
                   getUserSpent(id, token);

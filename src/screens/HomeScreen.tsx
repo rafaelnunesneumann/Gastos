@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   SafeAreaView,
@@ -6,10 +6,23 @@ import {
   ScrollView,
   Text,
   Platform,
+  FlatList,
 } from "react-native";
 import Header from "../components/Header";
+import { useSpents } from "../context/SpentContext";
+
+function convertToTime(isoString: string): string {
+  const date = new Date(isoString);
+  const options: Intl.DateTimeFormatOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+  return date.toLocaleTimeString("en-GB", options);
+}
 
 const HomeScreen = () => {
+  const { spents } = useSpents();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView style={styles.container} alwaysBounceVertical={false}>
@@ -35,18 +48,27 @@ const HomeScreen = () => {
           <Text style={styles.todayText}>R$ -750.00</Text>
         </View>
 
-        <View style={styles.card}>
-          <View style={styles.cardStart}>
-            <Text style={styles.cardIcon}>⛽</Text>
-            <View style={styles.cardStartText}>
-              <Text style={styles.cardSpent}>Gasolina</Text>
-              <Text style={styles.cardTime}>10:30</Text>
+        <FlatList
+          data={spents}
+          renderItem={({ item }) => (
+            <View style={styles.card} key={item.id}>
+              <View style={styles.cardStart}>
+                <Text style={styles.cardIcon}>⛽</Text>
+                <View style={styles.cardStartText}>
+                  <Text style={styles.cardSpent}>{item.type}</Text>
+                  <Text style={styles.cardTime}>
+                    {convertToTime(item.created_at)}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.cardEnd}>
+                <Text style={styles.cardValue}>R$ -{item.value}</Text>
+              </View>
             </View>
-          </View>
-          <View style={styles.cardEnd}>
-            <Text style={styles.cardValue}>R$ -750.00</Text>
-          </View>
-        </View>
+          )}
+          keyExtractor={(item) => item.id}
+          scrollEnabled={false}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -79,38 +101,38 @@ const styles = StyleSheet.create({
   },
   todayText: {
     fontSize: 16,
-    color: '#8C8C8C'
+    color: "#8C8C8C",
   },
   card: {
     padding: 16,
     alignItems: "center",
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   cardIcon: {
     fontSize: 30,
   },
   cardStart: {
-    width: '50%', 
-    flexDirection: 'row',
+    width: "50%",
+    flexDirection: "row",
   },
   cardStartText: {
-    marginLeft: 15, 
-    justifyContent: 'space-between'
+    marginLeft: 15,
+    justifyContent: "space-between",
   },
   cardSpent: {
-    fontSize: 16
+    fontSize: 16,
   },
   cardTime: {
     fontSize: 14,
-    color: '#8C8C8C'
+    color: "#8C8C8C",
   },
   cardEnd: {
-    paddingRight: 2
+    paddingRight: 2,
   },
   cardValue: {
-    color: 'red'
-  }
+    color: "red",
+  },
 });
 
 export default HomeScreen;
