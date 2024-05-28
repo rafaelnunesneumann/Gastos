@@ -10,12 +10,14 @@ import {
 interface InputProps {
   inputStyle: StyleProp<ViewStyle>;
   placeholder: string;
-  onSelectStyle: StyleProp<ViewStyle>;
+  onSelectStyle?: StyleProp<ViewStyle>;
   onChangeText?: ((text: string) => void) | undefined;
   autoComplete?: any;
   inputMode?: any;
   secureTextEntry?: any;
   value?: any;
+  textAlign?: any;
+  fontSize?: number;
 }
 
 const MyTextInput: React.FC<InputProps> = ({
@@ -27,6 +29,8 @@ const MyTextInput: React.FC<InputProps> = ({
   inputMode = "text",
   secureTextEntry = false,
   value,
+  textAlign,
+  fontSize,
 }) => {
   const textInputRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -43,7 +47,11 @@ const MyTextInput: React.FC<InputProps> = ({
     <View style={styles.container}>
       <TextInput
         ref={textInputRef}
-        style={[inputStyle, isFocused ? onSelectStyle : null]}
+        style={[
+          inputStyle,
+          isFocused && onSelectStyle ? onSelectStyle : null,
+          { fontSize: fontSize },
+        ]}
         onFocus={handleFocus}
         onBlur={handleBlur}
         placeholder={placeholder}
@@ -53,6 +61,7 @@ const MyTextInput: React.FC<InputProps> = ({
         inputMode={inputMode}
         secureTextEntry={secureTextEntry}
         value={value}
+        textAlign={textAlign}
       />
     </View>
   );

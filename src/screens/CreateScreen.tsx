@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   SafeAreaView,
@@ -7,9 +7,14 @@ import {
   Text,
   Platform,
   FlatList,
+  Modal,
 } from "react-native";
 import Header from "../components/Header";
 import { useSpents } from "../context/SpentContext";
+import { BlurView } from "expo-blur";
+import { useIsFocused } from "@react-navigation/native";
+import MyTextInput from "../components/MyTextInput";
+import Button from "../components/Button";
 
 function convertToTime(isoString: string): string {
   const date = new Date(isoString);
@@ -21,8 +26,14 @@ function convertToTime(isoString: string): string {
   return date.toLocaleTimeString("en-GB", options);
 }
 
-const HomeScreen = () => {
+const CreateScreen = ({ navigation }: any) => {
   const { spents } = useSpents();
+  const [modalVisible, setModalVisible] = useState(true);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    setModalVisible(isFocused ? true : false);
+  }, [isFocused]);
 
   const totalSpents = (): string => {
     let total = 0;
@@ -51,6 +62,74 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={styles.modalBackground}>
+          <BlurView intensity={50} style={styles.absolute} tint="light" />
+          <View style={styles.modalContainer}>
+            <Text style={{ color: "#636363" }}>Hoje - 27/05/2024</Text>
+            <MyTextInput
+              inputStyle={[
+                {
+                  marginTop: 10,
+                  width: "50%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderBottomWidth: 1,
+                  borderColor: "#949494",
+                },
+              ]}
+              placeholder="0"
+              autoComplete={"cc-number"}
+              textAlign={"center"}
+              fontSize={40}
+            />
+            <View
+              style={{
+                marginTop: 40,
+                width: "65%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Button
+                buttonStyle={{
+                  backgroundColor: "red",
+                  paddingHorizontal: 4,
+                  paddingVertical: 12,
+                  width: "45%",
+                  alignItems: "center",
+                  borderRadius: 8,
+                }}
+                textButton="Cancelar"
+                textStyle={{}}
+                onPress={() => {
+                  setModalVisible(false);
+                  navigation.navigate("Home");
+                }}
+              />
+              <Button
+                buttonStyle={{
+                  backgroundColor: "green",
+                  paddingHorizontal: 4,
+                  paddingVertical: 12,
+                  width: "45%",
+                  alignItems: "center",
+                  borderRadius: 8,
+                }}
+                textButton="Criar"
+                textStyle={{}}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
       <ScrollView
         style={styles.container}
         bounces={false}
@@ -177,12 +256,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(255,255,255, 0.3)",
   },
   modalContainer: {
     width: 300,
     padding: 20,
-    backgroundColor: "white",
     borderRadius: 10,
     alignItems: "center",
   },
@@ -195,4 +273,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default CreateScreen;

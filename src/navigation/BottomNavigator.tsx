@@ -4,6 +4,7 @@ import HomeScreen from "../screens/HomeScreen";
 import Icon from "react-native-vector-icons/AntDesign";
 import Icon2 from "react-native-vector-icons/Entypo";
 import { Platform, Text } from "react-native";
+import CreateScreen from "../screens/CreateScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -41,7 +42,7 @@ const BottomNav = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Criar" component={HomeScreen} />
+      <Tab.Screen name="Criar" component={CreateScreen} />
       <Tab.Screen name="Análise" component={HomeScreen} />
     </Tab.Navigator>
   );
