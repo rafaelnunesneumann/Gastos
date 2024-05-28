@@ -36,7 +36,7 @@ function AppContent() {
 
         if (token) {
           try {
-            const response = await axios.get(`${BASE_URL}/auth`, {
+            const response = await axios.get(`${BASE_URL}/auth?userId=${id}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
