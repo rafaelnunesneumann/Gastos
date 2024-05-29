@@ -58,7 +58,7 @@ const HomeScreen = () => {
       >
         <Header>GASTOS</Header>
         <View style={styles.month}>
-          <Text style={styles.monthSpentText}>Gastos esse mes</Text>
+          <Text style={styles.monthSpentText}>Gastos hoje</Text>
           <View style={styles.monthTotalView}>
             <Text style={{ fontSize: 35, marginTop: 6, color: "#d80000" }}>
               R$
