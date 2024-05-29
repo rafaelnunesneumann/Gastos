@@ -4,11 +4,13 @@ import { Modal, StyleSheet, Text, View } from "react-native";
 import Button from "../../../components/Button";
 import Icon from "react-native-vector-icons/AntDesign";
 import Icon2 from "react-native-vector-icons/Feather";
+import { useExpenses } from "../../../context/ExpensesContext";
 
 interface TagModalProps {
   modalVisible: boolean;
   setModalVisible: Function;
   setAddTagModalVisible: Function;
+  setExpenseType: Function;
   children?: React.ReactNode;
 }
 
@@ -17,7 +19,9 @@ const TagModal = ({
   setModalVisible,
   children,
   setAddTagModalVisible,
+  setExpenseType,
 }: TagModalProps) => {
+  const { expenses } = useExpenses();
   return (
     <Modal
       animationType="slide"
@@ -72,6 +76,23 @@ const TagModal = ({
               icon={<Icon name="plus" size={25} />}
               onPress={() => setAddTagModalVisible(true)}
             />
+            {expenses.map((expense) => {
+              return (
+                <Button
+                  key={expense.name}
+                  buttonStyle={styles.expenseButton}
+                  textButton={expense.emoji + `\n${expense.name}`}
+                  textStyle={{
+                    textAlign: "center",
+                    width: 80,
+                  }}
+                  onPress={() => {
+                    setExpenseType(expense);
+                    setModalVisible(false);
+                  }}
+                />
+              );
+            })}
           </View>
         </View>
       </View>
@@ -119,6 +140,14 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 100,
     borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  expenseButton: {
+    flexBasis: "12%",
+    margin: "4%",
+    paddingVertical: 12,
+    borderRadius: 100,
     alignItems: "center",
     justifyContent: "center",
   },

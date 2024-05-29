@@ -18,6 +18,7 @@ interface InputProps {
   value?: any;
   textAlign?: any;
   fontSize?: number;
+  autoCapitalize?: any;
 }
 
 const MyTextInput: React.FC<InputProps> = ({
@@ -31,6 +32,7 @@ const MyTextInput: React.FC<InputProps> = ({
   value,
   textAlign,
   fontSize,
+  autoCapitalize,
 }) => {
   const textInputRef = useRef(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -57,7 +59,7 @@ const MyTextInput: React.FC<InputProps> = ({
         placeholder={placeholder}
         onChangeText={onChangeText}
         autoComplete={autoComplete}
-        autoCapitalize="none"
+        autoCapitalize={autoCapitalize}
         inputMode={inputMode}
         secureTextEntry={secureTextEntry}
         value={value}

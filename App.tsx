@@ -8,6 +8,7 @@ import { LoginProvider, useLogin } from "./src/context/LoginContext";
 import { SpentProvider, useSpents } from "./src/context/SpentContext";
 import * as SplashScreen from "expo-splash-screen";
 import SpentControl from "./src/hooks/SpentControl";
+import { ExpensesProvider } from "./src/context/ExpensesContext";
 
 const BASE_URL = process.env.BASE_URL;
 
@@ -15,11 +16,13 @@ SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   return (
-    <SpentProvider>
-      <LoginProvider>
-        <AppContent />
-      </LoginProvider>
-    </SpentProvider>
+    <ExpensesProvider>
+      <SpentProvider>
+        <LoginProvider>
+          <AppContent />
+        </LoginProvider>
+      </SpentProvider>
+    </ExpensesProvider>
   );
 }
 

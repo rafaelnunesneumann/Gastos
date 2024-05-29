@@ -9,6 +9,7 @@ const CreateScreen = ({ navigation }: any) => {
   const [modalVisible, setModalVisible] = useState(true);
   const [tagModalVisible, setTagModalVisible] = useState(false);
   const [addTagModalVisible, setAddTagModalVisible] = useState(false);
+  const [expenseType, setExpenseType] = useState(null);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -21,12 +22,14 @@ const CreateScreen = ({ navigation }: any) => {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         setTagModalVisible={setTagModalVisible}
+        expenseType={expenseType}
         navigation={navigation}
       >
         <TagModal
           modalVisible={tagModalVisible}
           setModalVisible={setTagModalVisible}
           setAddTagModalVisible={setAddTagModalVisible}
+          setExpenseType={setExpenseType}
         >
           <AddTagModal
             modalVisible={addTagModalVisible}
