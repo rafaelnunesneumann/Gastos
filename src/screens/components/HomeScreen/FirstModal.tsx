@@ -3,7 +3,6 @@ import React from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
 import MyTextInput from "../../../components/MyTextInput";
 import Icon from "react-native-vector-icons/AntDesign";
-import Icon2 from "react-native-vector-icons/SimpleLineIcons";
 import Button from "../../../components/Button";
 
 interface FirstModalProps {
@@ -55,7 +54,6 @@ const FirstModal = ({
               textStyle={styles.selectButtonText}
               onPress={() => setTagModalVisible(true)}
             />
-            <Icon2 name="reload" size={15} color={"#949494"} />
           </View>
           <View style={styles.buttonRow}>
             <Button

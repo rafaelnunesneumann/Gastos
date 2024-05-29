@@ -3,13 +3,21 @@ import React from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
 import Button from "../../../components/Button";
 import Icon from "react-native-vector-icons/AntDesign";
+import Icon2 from "react-native-vector-icons/Feather";
 
 interface TagModalProps {
   modalVisible: boolean;
   setModalVisible: Function;
+  setAddTagModalVisible: Function;
+  children?: React.ReactNode;
 }
 
-const TagModal = ({ modalVisible, setModalVisible }: TagModalProps) => {
+const TagModal = ({
+  modalVisible,
+  setModalVisible,
+  children,
+  setAddTagModalVisible,
+}: TagModalProps) => {
   return (
     <Modal
       animationType="slide"
@@ -27,17 +35,47 @@ const TagModal = ({ modalVisible, setModalVisible }: TagModalProps) => {
           experimentalBlurMethod="none"
         />
         <View style={styles.modalContainer}>
-          <Text style={{ color: "#636363", fontWeight: "bold" }}>
-            TIPO DO GASTO
-          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                paddingVertical: 8,
+                alignSelf: "flex-start",
+              }}
+            >
+              <Button
+                buttonStyle={{ alignSelf: "flex-start" }}
+                icon={<Icon2 name="arrow-left" size={25} />}
+                onPress={() => setModalVisible(false)}
+              />
+            </View>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 16,
+                color: "#636363",
+                flex: 1,
+                textAlign: "center",
+              }}
+            >
+              TIPO DO GASTO
+            </Text>
+          </View>
           <View style={styles.buttonContainer}>
             <Button
               buttonStyle={styles.button}
               icon={<Icon name="plus" size={25} />}
+              onPress={() => setAddTagModalVisible(true)}
             />
           </View>
         </View>
       </View>
+      {children}
     </Modal>
   );
 };

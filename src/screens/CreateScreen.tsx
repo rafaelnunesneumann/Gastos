@@ -3,10 +3,12 @@ import { useIsFocused } from "@react-navigation/native";
 import HomeScreen from "./HomeScreen";
 import FirstModal from "./components/HomeScreen/FirstModal";
 import TagModal from "./components/HomeScreen/TagModal";
+import AddTagModal from "./components/HomeScreen/AddTagModal";
 
 const CreateScreen = ({ navigation }: any) => {
   const [modalVisible, setModalVisible] = useState(true);
   const [tagModalVisible, setTagModalVisible] = useState(false);
+  const [addTagModalVisible, setAddTagModalVisible] = useState(false);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -24,7 +26,13 @@ const CreateScreen = ({ navigation }: any) => {
         <TagModal
           modalVisible={tagModalVisible}
           setModalVisible={setTagModalVisible}
-        />
+          setAddTagModalVisible={setAddTagModalVisible}
+        >
+          <AddTagModal
+            modalVisible={addTagModalVisible}
+            setModalVisible={setAddTagModalVisible}
+          />
+        </TagModal>
       </FirstModal>
       <HomeScreen />
     </>
