@@ -16,7 +16,10 @@ interface FirstModalProps {
   modalVisible: boolean;
   setModalVisible: Function;
   setTagModalVisible: Function;
+  setConfirmModalVisible: Function;
   expenseType: any;
+  amount: number;
+  setAmount: Function;
   navigation: any;
   children?: React.ReactNode;
 }
@@ -25,7 +28,10 @@ const FirstModal = ({
   modalVisible,
   setModalVisible,
   setTagModalVisible,
+  setConfirmModalVisible,
   expenseType,
+  amount,
+  setAmount,
   navigation,
   children,
 }: FirstModalProps) => {
@@ -46,9 +52,19 @@ const FirstModal = ({
             <MyTextInput
               inputStyle={styles.textInput}
               placeholder="R$ 0"
-              autoComplete={"cc-number"}
+              inputMode={"decimal"}
               textAlign={"center"}
               fontSize={40}
+              onChangeText={(value) => {
+                const number: number = Number.parseFloat(
+                  value.replace(",", ".")
+                );
+                if (number < 999999999) {
+                  setAmount(number);
+                } else {
+                  setAmount(0);
+                }
+              }}
             />
             <Icon
               name="arrowdown"
@@ -82,6 +98,7 @@ const FirstModal = ({
                 textStyle={{}}
                 onPress={() => {
                   setModalVisible(false);
+                  setAmount(0);
                   navigation.navigate("Home");
                 }}
               />
@@ -89,6 +106,11 @@ const FirstModal = ({
                 buttonStyle={[styles.button, styles.createButton]}
                 textButton="Criar"
                 textStyle={styles.createButtonText}
+                onPress={() => {
+                  if (amount > 0 && expenseType != null) {
+                    setConfirmModalVisible(true);
+                  }
+                }}
               />
             </View>
           </View>

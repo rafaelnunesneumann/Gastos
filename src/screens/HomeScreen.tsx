@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   SafeAreaView,
@@ -22,11 +22,11 @@ function convertToTime(isoString: string): string {
 }
 
 const HomeScreen = () => {
-  const { spents } = useSpents();
+  const { monthSpents, todaySpents } = useSpents();
 
   const totalSpents = (): string => {
     let total = 0;
-    spents.map((value) => {
+    todaySpents.map((value) => {
       total += value.value;
     });
     return total.toFixed(2);
@@ -34,7 +34,7 @@ const HomeScreen = () => {
 
   const totalInteger = (): number => {
     let total = 0;
-    spents.map((value) => {
+    monthSpents.map((value) => {
       total += value.value;
     });
     return ~~total;
@@ -42,7 +42,7 @@ const HomeScreen = () => {
 
   const totalCents = (): string => {
     let total = 0;
-    spents.map((value) => {
+    monthSpents.map((value) => {
       total += value.value;
     });
     const output = total.toFixed(2).toString().split(".")[1];
@@ -58,7 +58,7 @@ const HomeScreen = () => {
       >
         <Header>GASTOS</Header>
         <View style={styles.month}>
-          <Text style={styles.monthSpentText}>Gastos hoje</Text>
+          <Text style={styles.monthSpentText}>Gastos esse mes</Text>
           <View style={styles.monthTotalView}>
             <Text style={{ fontSize: 35, marginTop: 6, color: "#d80000" }}>
               R$
@@ -80,13 +80,13 @@ const HomeScreen = () => {
           <Text style={styles.todayText}>R$ -{totalSpents()}</Text>
         </View>
 
-        {spents.length > 0 ? (
+        {todaySpents.length > 0 ? (
           <FlatList
-            data={spents}
+            data={todaySpents}
             renderItem={({ item }) => (
               <View style={styles.card} key={item.id}>
                 <View style={styles.cardStart}>
-                  <Text style={styles.cardIcon}>⛽</Text>
+                  <Text style={styles.cardIcon}>{item.icon}</Text>
                   <View style={styles.cardStartText}>
                     <Text style={styles.cardSpent}>{item.type}</Text>
                     <Text style={styles.cardTime}>
@@ -95,7 +95,9 @@ const HomeScreen = () => {
                   </View>
                 </View>
                 <View style={styles.cardEnd}>
-                  <Text style={styles.cardValue}>R$ -{item.value}</Text>
+                  <Text style={styles.cardValue}>
+                    R$ -{item.value.toFixed(2)}
+                  </Text>
                 </View>
               </View>
             )}

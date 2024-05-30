@@ -73,7 +73,7 @@ const TagModal = ({
           <View style={styles.buttonContainer}>
             <Button
               buttonStyle={styles.button}
-              icon={<Icon name="plus" size={25} />}
+              icon={<Icon name="plus" size={20} />}
               onPress={() => setAddTagModalVisible(true)}
             />
             {expenses.map((expense) => {
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flexBasis: "12%",
-    margin: "4%",
+    marginHorizontal: "4%",
     paddingVertical: 8,
     borderRadius: 100,
     borderWidth: 1,
