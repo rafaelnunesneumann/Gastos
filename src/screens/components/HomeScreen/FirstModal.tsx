@@ -35,6 +35,18 @@ const FirstModal = ({
   navigation,
   children,
 }: FirstModalProps) => {
+  function getDate(): string {
+    const today: Date = new Date();
+    const day: number = today.getDate();
+    const month: number = today.getMonth() + 1;
+    const year: number = today.getFullYear();
+
+    const formattedDay: string = day < 10 ? `0${day}` : `${day}`;
+    const formattedMonth: string = month < 10 ? `0${month}` : `${month}`;
+
+    return `${formattedDay}/${formattedMonth}/${year}`;
+  }
+
   return (
     <Modal
       animationType="slide"
@@ -48,7 +60,12 @@ const FirstModal = ({
         <BlurView intensity={30} style={styles.absolute} tint="light" />
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.modalContainer}>
-            <Text style={styles.dateText}>Hoje - 27/05/2024</Text>
+            <Text
+              style={{ fontWeight: "bold", marginBottom: 20, fontSize: 20 }}
+            >
+              NOVO GASTO
+            </Text>
+            <Text style={styles.dateText}>Hoje - {getDate()}</Text>
             <MyTextInput
               inputStyle={styles.textInput}
               placeholder="R$ 0"

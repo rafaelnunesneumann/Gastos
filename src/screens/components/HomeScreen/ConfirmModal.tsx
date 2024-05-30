@@ -41,86 +41,42 @@ const ConfirmModal = ({
           experimentalBlurMethod="none"
         />
         <View style={styles.modalContainer}>
-          <View style={{ width: "100%" }}>
-            <Text style={{ fontWeight: "bold", fontSize: 20 }}>Confirmar</Text>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Confirmar</Text>
           </View>
-          <View
-            style={{
-              width: "100%",
-              marginTop: 20,
-              flexDirection: "row",
-              paddingVertical: 20,
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#D1D5DB",
-                padding: 10,
-                borderRadius: 100,
-              }}
-            >
+          <View style={styles.content}>
+            <View style={styles.iconContainer}>
               <Icon name="lock" size={15} color={"#6B7280"} />
             </View>
-            <Text style={{ color: "#6B7280", fontWeight: "400" }}>
+            <Text style={styles.descriptionText}>
               Ajude-nos a garantir a precisão revisando suas despesas antes de
               confirmá-las, pois você não poderá editá-las posteriormente.
             </Text>
           </View>
-          <View
-            style={{
-              flex: 0.5,
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "85%",
-            }}
-          >
-            <Text style={{ fontSize: 30, fontWeight: "bold" }}>
-              R$ {amount.toFixed(2)}
-            </Text>
+          <View style={styles.amountContainer}>
+            <Text style={styles.amountText}>R$ {amount.toFixed(2)}</Text>
             <Icon2 name="arrowdown" size={30} />
             {expenseType ? (
-              <Text style={{ fontSize: 30 }}>
+              <Text style={styles.expenseTypeText}>
                 {expenseType.emoji} {expenseType.name}
               </Text>
             ) : null}
           </View>
-          <View
-            style={{
-              width: "100%",
-              flex: 0.5,
-              alignItems: "center",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
+          <View style={styles.buttonsContainer}>
             <Button
-              buttonStyle={{
-                backgroundColor: "#FECACA",
-                width: "49%",
-                alignItems: "center",
-                paddingVertical: 20,
-                borderRadius: 5,
-              }}
+              buttonStyle={styles.cancelButton}
               textButton="Cancelar"
-              textStyle={{ fontWeight: "bold" }}
+              textStyle={styles.buttonText}
               onPress={() => setModalVisible(false)}
             />
             <Button
-              buttonStyle={{
-                backgroundColor: "black",
-                width: "49%",
-                alignItems: "center",
-                paddingVertical: 20,
-                borderRadius: 5,
-              }}
+              buttonStyle={styles.confirmButton}
               textButton="Confirmar"
-              textStyle={{ color: "white", fontWeight: "bold" }}
+              textStyle={styles.confirmButtonText}
               onPress={async () => {
                 await addSpent(amount, expenseType.name, expenseType.emoji);
-                setModalVisible(false);
                 setFirstModalVisible(false);
+                setModalVisible(false);
                 const reloadParam = Math.random().toString();
                 navigation.navigate("Home", { reload: reloadParam });
               }}
@@ -156,6 +112,71 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
+  },
+  header: {
+    width: "100%",
+  },
+  headerText: {
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  content: {
+    width: "100%",
+    marginTop: 20,
+    flexDirection: "row",
+    paddingVertical: 20,
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  iconContainer: {
+    backgroundColor: "#D1D5DB",
+    padding: 10,
+    borderRadius: 100,
+  },
+  descriptionText: {
+    color: "#6B7280",
+    fontWeight: "400",
+  },
+  amountContainer: {
+    flex: 0.5,
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "85%",
+  },
+  amountText: {
+    fontSize: 30,
+    fontWeight: "bold",
+  },
+  expenseTypeText: {
+    fontSize: 30,
+  },
+  buttonsContainer: {
+    width: "100%",
+    flex: 0.5,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  cancelButton: {
+    backgroundColor: "#FECACA",
+    width: "49%",
+    alignItems: "center",
+    paddingVertical: 20,
+    borderRadius: 5,
+  },
+  confirmButton: {
+    backgroundColor: "black",
+    width: "49%",
+    alignItems: "center",
+    paddingVertical: 20,
+    borderRadius: 5,
+  },
+  buttonText: {
+    fontWeight: "bold",
+  },
+  confirmButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
 

@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import React from "react";
-import { Modal, StyleSheet, Text, View } from "react-native";
+import { FlatList, Modal, StyleSheet, Text, View } from "react-native";
 import Button from "../../../components/Button";
 import Icon from "react-native-vector-icons/AntDesign";
 import Icon2 from "react-native-vector-icons/Feather";
@@ -71,26 +71,30 @@ const TagModal = ({
             </Text>
           </View>
           <View style={styles.buttonContainer}>
-            <Button
-              buttonStyle={styles.button}
-              icon={<Icon name="plus" size={20} />}
-              onPress={() => setAddTagModalVisible(true)}
-            />
+            <View style={styles.buttonView}>
+              <Button
+                buttonStyle={styles.button}
+                icon={<Icon name="plus" size={20} />}
+                onPress={() => setAddTagModalVisible(true)}
+              />
+            </View>
+
             {expenses.map((expense) => {
               return (
-                <Button
-                  key={expense.name}
-                  buttonStyle={styles.expenseButton}
-                  textButton={expense.emoji + `\n${expense.name}`}
-                  textStyle={{
-                    textAlign: "center",
-                    width: 80,
-                  }}
-                  onPress={() => {
-                    setExpenseType(expense);
-                    setModalVisible(false);
-                  }}
-                />
+                <View style={styles.buttonView} key={expense.name}>
+                  <Button
+                    buttonStyle={[styles.button, { borderWidth: 0 }]}
+                    textButton={expense.emoji + `\n${expense.name}`}
+                    textStyle={{
+                      textAlign: "center",
+                      width: 80,
+                    }}
+                    onPress={() => {
+                      setExpenseType(expense);
+                      setModalVisible(false);
+                    }}
+                  />
+                </View>
               );
             })}
           </View>
@@ -135,21 +139,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    flexBasis: "12%",
-    marginHorizontal: "4%",
+    width: "50%",
+    marginBottom: 15,
     paddingVertical: 8,
     borderRadius: 100,
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
-  expenseButton: {
-    flexBasis: "12%",
-    margin: "4%",
-    paddingVertical: 12,
-    borderRadius: 100,
+  buttonView: {
+    flexBasis: "25%",
     alignItems: "center",
-    justifyContent: "center",
   },
 });
 

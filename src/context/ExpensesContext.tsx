@@ -19,7 +19,15 @@ const ExpensesContext = createContext<ExpensesContextType | undefined>(
 export const ExpensesProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [expenses, setExpenses] = useState<ExpenseType[]>([]);
+  const [expenses, setExpenses] = useState<ExpenseType[]>([
+    { emoji: "🏠", name: "Aluguel" },
+    { emoji: "💊", name: "Saúde" },
+    { emoji: "🍕", name: "Comida" },
+    { emoji: "👕", name: "Roupas" },
+    { emoji: "🎁", name: "Presente" },
+    { emoji: "📚", name: "Educação" },
+    { emoji: "✈️", name: "Férias" },
+  ]);
 
   const addExpense = async ({ emoji, name }: ExpenseType) => {
     const newExpense = { emoji, name };
