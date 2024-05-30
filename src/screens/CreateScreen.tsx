@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
-import HomeScreen from "./HomeScreen";
 import FirstModal from "./components/HomeScreen/FirstModal";
 import TagModal from "./components/HomeScreen/TagModal";
 import AddTagModal from "./components/HomeScreen/AddTagModal";
@@ -51,7 +50,6 @@ const CreateScreen = ({ navigation }: any) => {
           navigation={navigation}
         />
       </FirstModal>
-      <HomeScreen />
     </>
   );
 };

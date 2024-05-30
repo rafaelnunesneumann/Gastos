@@ -57,7 +57,6 @@ const FirstModal = ({
       }}
     >
       <View style={styles.modalBackground}>
-        <BlurView intensity={30} style={styles.absolute} tint="light" />
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.modalContainer}>
             <Text
@@ -143,7 +142,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255, 0.3)",
+    backgroundColor: "white",
   },
   modalContainer: {
     width: "100%",
