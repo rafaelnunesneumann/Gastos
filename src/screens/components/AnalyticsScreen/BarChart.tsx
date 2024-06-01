@@ -15,6 +15,8 @@ const Chart = ({ data }: any) => {
         xAxisThickness={0}
         isAnimated
         hideRules
+        yAxisExtraHeight={25}
+        barMarginBottom={-5}
         renderTooltip={(item: { value: any }) => {
           return (
             <View
@@ -26,7 +28,7 @@ const Chart = ({ data }: any) => {
                 borderRadius: 4,
               }}
             >
-              <Text style={{ color: "white" }}>{item.value}</Text>
+              <Text style={{ color: "white" }}>{item.value.toFixed(2)}</Text>
             </View>
           );
         }}
