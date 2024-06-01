@@ -15,7 +15,7 @@ const Chart = ({ data }: any) => {
         xAxisThickness={0}
         isAnimated
         hideRules
-        renderTooltip={(item: { value: any }, index: any) => {
+        renderTooltip={(item: { value: any }) => {
           return (
             <View
               style={{

@@ -66,7 +66,7 @@ const AnalyticsScreen = () => {
             </Text>
           </View>
           <Text style={{ fontSize: 16, color: "#6B7280" }}>
-            Total gasto esse mês
+            Total gasto por dia esse mês:
           </Text>
           <View
             style={{

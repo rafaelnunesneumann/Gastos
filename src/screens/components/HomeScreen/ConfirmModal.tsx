@@ -13,6 +13,7 @@ interface TagModalProps {
   expenseType: any;
   amount: number;
   navigation: any;
+  setAmount: Function;
 }
 
 const ConfirmModal = ({
@@ -22,6 +23,7 @@ const ConfirmModal = ({
   expenseType,
   amount,
   navigation,
+  setAmount,
 }: TagModalProps) => {
   const { addSpent } = SpentControl();
   return (
@@ -78,6 +80,7 @@ const ConfirmModal = ({
                 setFirstModalVisible(false);
                 setModalVisible(false);
                 const reloadParam = Math.random().toString();
+                setAmount(0);
                 navigation.navigate("Home", { reload: reloadParam });
               }}
             />

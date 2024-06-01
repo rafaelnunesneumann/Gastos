@@ -48,6 +48,7 @@ const CreateScreen = ({ navigation }: any) => {
           expenseType={expenseType}
           amount={amount}
           navigation={navigation}
+          setAmount={setAmount}
         />
       </FirstModal>
     </>
