@@ -71,6 +71,7 @@ const AnalyticsScreen = () => {
           <View
             style={{
               marginTop: 30,
+              flex: 1,
               elevation: 5,
               shadowOpacity: 0.2,
               shadowOffset: {

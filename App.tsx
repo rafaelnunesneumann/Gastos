@@ -5,12 +5,12 @@ import MyStackNavigator from "./src/navigation/StackNavigator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { LoginProvider, useLogin } from "./src/context/LoginContext";
-import { SpentProvider, useSpents } from "./src/context/SpentContext";
+import { SpentProvider } from "./src/context/SpentContext";
 import * as SplashScreen from "expo-splash-screen";
 import SpentControl from "./src/hooks/SpentControl";
 import { ExpensesProvider } from "./src/context/ExpensesContext";
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 SplashScreen.preventAutoHideAsync();
 

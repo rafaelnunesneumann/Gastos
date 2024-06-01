@@ -5,7 +5,7 @@ import Button from "../components/Button";
 import Icon from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const handleRegister = async ({

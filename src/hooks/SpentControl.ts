@@ -4,39 +4,28 @@ import { useExpenses } from "../context/ExpensesContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SpentControl = () => {
-  const BASE_URL = process.env.BASE_URL;
+  const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
   const { monthSpents } = useSpents();
   const { addOnlyState } = useExpenses();
 
   const getUserSpent = async (id: string, token: string) => {
-    const expenses = await AsyncStorage.getItem("expenses");
-    if (expenses && expenses.length > 0) {
-      if (
-        !expenses.includes(
-          JSON.stringify([
-            { emoji: "🏠", name: "Aluguel" },
-            { emoji: "💊", name: "Saúde" },
-            { emoji: "🍕", name: "Comida" },
-            { emoji: "👕", name: "Roupas" },
-            { emoji: "🎁", name: "Presente" },
-            { emoji: "📚", name: "Educação" },
-            { emoji: "✈️", name: "Férias" },
-          ])
-        )
-      ) {
-        await AsyncStorage.setItem(
-          "expenses",
-          JSON.stringify([
-            { emoji: "🏠", name: "Aluguel" },
-            { emoji: "💊", name: "Saúde" },
-            { emoji: "🍕", name: "Comida" },
-            { emoji: "👕", name: "Roupas" },
-            { emoji: "🎁", name: "Presente" },
-            { emoji: "📚", name: "Educação" },
-            { emoji: "✈️", name: "Férias" },
-          ])
-        );
-      }
+    let expenses = await AsyncStorage.getItem("expenses");
+    if (!(expenses && expenses.length > 0)) {
+      await AsyncStorage.setItem(
+        "expenses",
+        JSON.stringify([
+          { emoji: "🏠", name: "Aluguel" },
+          { emoji: "💊", name: "Saúde" },
+          { emoji: "🍕", name: "Comida" },
+          { emoji: "👕", name: "Roupas" },
+          { emoji: "🎁", name: "Presente" },
+          { emoji: "📚", name: "Educação" },
+          { emoji: "✈️", name: "Férias" },
+        ])
+      );
+    }
+    expenses = await AsyncStorage.getItem("expenses");
+    if (expenses) {
       const object = JSON.parse(expenses);
       object.map((expense: any) => addOnlyState(expense));
     }

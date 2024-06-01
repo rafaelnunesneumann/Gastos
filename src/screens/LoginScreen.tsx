@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/AntDesign";
 import SpentControl from "../hooks/SpentControl";
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 console.log(BASE_URL);
 
 const LoginScreen: React.FC<{ navigation: any; setIsLoggedIn: Function }> = ({

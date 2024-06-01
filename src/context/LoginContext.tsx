@@ -15,7 +15,7 @@ export const LoginProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const { setTodaySpents, setMonthSpents } = useSpents();
+  const { setMonthSpents } = useSpents();
 
   const login = () => {
     setIsLoggedIn(true);
@@ -23,7 +23,6 @@ export const LoginProvider: React.FC<{ children: ReactNode }> = ({
 
   const logout = async () => {
     setIsLoggedIn(false);
-    setTodaySpents([]);
     setMonthSpents([]);
     await AsyncStorage.removeItem("token");
   };
