@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";
-import React from "react";
+import React, { useState } from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 import Icon2 from "react-native-vector-icons/AntDesign";
@@ -26,6 +26,7 @@ const ConfirmModal = ({
   setAmount,
 }: TagModalProps) => {
   const { addSpent } = SpentControl();
+  const [isLoading, setIsLoading] = useState(false);
   return (
     <Modal
       animationType="slide"
@@ -75,13 +76,16 @@ const ConfirmModal = ({
               buttonStyle={styles.confirmButton}
               textButton="Confirmar"
               textStyle={styles.confirmButtonText}
+              isLoading={isLoading}
               onPress={async () => {
+                setIsLoading(true);
                 await addSpent(amount, expenseType.name, expenseType.emoji);
                 setFirstModalVisible(false);
                 setModalVisible(false);
                 const reloadParam = Math.random().toString();
                 setAmount(0);
                 navigation.navigate("Home", { reload: reloadParam });
+                setIsLoading(false);
               }}
             />
           </View>

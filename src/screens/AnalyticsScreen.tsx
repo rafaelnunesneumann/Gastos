@@ -16,24 +16,30 @@ import moment from "moment";
 import Icon from "react-native-vector-icons/SimpleLineIcons";
 import Icon2 from "react-native-vector-icons/AntDesign";
 
-const AnalyticsScreen = () => {
+interface Spent {
+  created_at: string;
+  icon: string;
+  id: string;
+  type: string;
+  userId: string;
+  value: number;
+}
+
+interface TypeCount {
+  type: string;
+  count: number;
+  icon: string;
+  totalValue: number;
+}
+
+interface BarData {
+  frontColor?: string;
+  value: number;
+  label: string;
+}
+
+const AnalyticsScreen: React.FC = () => {
   const { monthSpents } = useSpents();
-
-  interface Spent {
-    created_at: string;
-    icon: string;
-    id: string;
-    type: string;
-    userId: string;
-    value: number;
-  }
-
-  interface TypeCount {
-    type: string;
-    count: number;
-    icon: string;
-    totalValue: number;
-  }
 
   const totalInteger = (): number => {
     let total = 0;
@@ -50,6 +56,32 @@ const AnalyticsScreen = () => {
     });
     const output = total.toFixed(2).toString().split(".")[1];
     return output;
+  };
+
+  const getTypeCounts = (monthSpents: Spent[]): TypeCount[] => {
+    const typeMap: Map<string, TypeCount> = new Map();
+
+    monthSpents.forEach((spent) => {
+      const { type, value, icon } = spent;
+      if (typeMap.has(type)) {
+        const typeCount = typeMap.get(type)!;
+        typeCount.count += 1;
+        typeCount.totalValue += value;
+      } else {
+        typeMap.set(type, {
+          type,
+          count: 1,
+          icon,
+          totalValue: value,
+        });
+      }
+    });
+
+    const typeCountsArray = Array.from(typeMap.values());
+
+    typeCountsArray.sort((a, b) => b.count - a.count);
+
+    return typeCountsArray;
   };
 
   const getSpentsByDay = (date: string): number => {
@@ -78,7 +110,7 @@ const AnalyticsScreen = () => {
       spendingByDay[date] += transaction.value;
     });
 
-    let maxDate = null;
+    let maxDate: string | null = null;
     let maxSpending = 0;
 
     for (const date in spendingByDay) {
@@ -108,7 +140,7 @@ const AnalyticsScreen = () => {
       typeCounts[transaction.type].totalValue += transaction.value;
     });
 
-    let maxType = null;
+    let maxType: string | null = null;
     let maxCount = 0;
 
     for (const type in typeCounts) {
@@ -132,12 +164,6 @@ const AnalyticsScreen = () => {
     const date = parse(dateString, "yyyy-MM-dd", new Date());
     return format(date, "dd MMM yyyy", { locale: ptBR });
   };
-
-  interface BarData {
-    frontColor?: string;
-    value: number;
-    label: string;
-  }
 
   const generateBarData = (): BarData[] => {
     const today = new Date();
@@ -163,136 +189,96 @@ const AnalyticsScreen = () => {
   const barData = generateBarData();
   const highestSpent = getDayWithHighestSpending(monthSpents);
   const mostEntrys = getTypeWithMostEntries(monthSpents);
+  const typeCounts = getTypeCounts(monthSpents);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <ScrollView
-        style={styles.container}
-        bounces={false}
-        showsVerticalScrollIndicator={false}
-      >
-        <Header>GASTOS</Header>
-        <View style={{ paddingHorizontal: 20 }}>
-          <View style={styles.monthTotalView}>
-            <Text style={{ fontSize: 35, marginTop: 6, color: "#d80000" }}>
-              R$
-            </Text>
-            <Text style={{ fontSize: 35, marginTop: 6, color: "#d80000" }}>
-              -
-            </Text>
-            <Text style={{ fontSize: 50, color: "#d80000" }}>
-              {totalInteger()}
-            </Text>
-            <Text style={{ fontSize: 35, marginTop: 6, color: "#d80000" }}>
-              .{totalCents()}
-            </Text>
-          </View>
-          <Text style={{ fontSize: 16, color: "#6B7280" }}>
-            Total gasto por dia esse mês:
-          </Text>
-          <View
-            style={{
-              marginTop: 30,
-              flex: 1,
-              elevation: 5,
-              shadowOpacity: 0.2,
-              shadowOffset: {
-                width: 2,
-                height: 0,
-              },
-            }}
-          >
-            <Chart data={barData} />
-          </View>
-          <View
-            style={{
-              backgroundColor: "#F8FAFC",
-              marginTop: 40,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 10,
-              borderRadius: 10,
-              elevation: 5,
-              shadowOpacity: 0.2,
-              shadowOffset: {
-                width: 3,
-                height: 2,
-              },
-            }}
-          >
-            <View style={{ flexDirection: "row" }}>
-              <View
-                style={{
-                  backgroundColor: "#FEF08A",
-                  padding: 5,
-                  borderRadius: 100,
-                }}
-              >
-                <Icon name="graph" size={25} />
-              </View>
-              <View style={{ marginLeft: 10 }}>
-                <Text style={{ fontSize: 15, fontWeight: "500" }}>
-                  Maior gasto
-                </Text>
-                <Text
-                  style={{ fontSize: 14, fontWeight: "500", color: "#6B7280" }}
-                >
-                  {formatDate(highestSpent?.date.toString() || "")}
-                </Text>
-              </View>
+      {monthSpents.length > 0 ? (
+        <ScrollView
+          style={styles.container}
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+        >
+          <Header>GASTOS</Header>
+          <View style={styles.content}>
+            <View style={styles.monthTotalView}>
+              <Text style={styles.currencySymbol}>R$</Text>
+              <Text style={styles.minusSign}>-</Text>
+              <Text style={styles.totalInteger}>{totalInteger()}</Text>
+              <Text style={styles.totalCents}>.{totalCents()}</Text>
             </View>
-            <Text style={{ color: "#d80000", fontWeight: "500" }}>
-              R$ -{highestSpent?.totalValue.toFixed(2)}
-            </Text>
-          </View>
+            <Text style={styles.totalText}>Total gasto por dia esse mês:</Text>
+            <View style={styles.chartContainer}>
+              <Chart data={barData} />
+            </View>
+            <View style={styles.spendingInfo}>
+              <View style={styles.spendingInfoContent}>
+                <View style={styles.iconContainer}>
+                  <Icon name="graph" size={25} />
+                </View>
+                <View style={styles.spendingInfoText}>
+                  <Text style={styles.infoTitle}>Maior gasto</Text>
+                  <Text style={styles.infoSubtitle}>
+                    {formatDate(highestSpent?.date.toString() || "")}
+                  </Text>
+                </View>
+              </View>
+              <Text style={styles.spendingAmount}>
+                R$ -{highestSpent?.totalValue.toFixed(2)}
+              </Text>
+            </View>
 
-          <View
-            style={{
-              backgroundColor: "#F8FAFC",
-              marginTop: 20,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 10,
-              borderRadius: 10,
-              elevation: 5,
-              shadowOpacity: 0.2,
-              shadowOffset: {
-                width: 3,
-                height: 2,
-              },
-            }}
-          >
-            <View style={{ flexDirection: "row" }}>
-              <View
-                style={{
-                  backgroundColor: "#FEF08A",
-                  padding: 5,
-                  borderRadius: 100,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Icon2 name="tag" size={25} />
+            <View style={styles.entryInfo}>
+              <View style={styles.entryInfoContent}>
+                <View style={styles.iconContainer}>
+                  <Icon2 name="tag" size={25} />
+                </View>
+                <View style={styles.entryInfoText}>
+                  <Text style={styles.infoTitle}>Maior entrada</Text>
+                  <Text style={styles.infoSubtitle}>
+                    {mostEntrys?.count} em {mostEntrys?.icon} {mostEntrys?.type}
+                  </Text>
+                </View>
               </View>
-              <View style={{ marginLeft: 10 }}>
-                <Text style={{ fontSize: 15, fontWeight: "500" }}>
-                  Maior entrada
-                </Text>
-                <Text
-                  style={{ fontSize: 14, fontWeight: "500", color: "#6B7280" }}
-                >
-                  {mostEntrys?.count} em {mostEntrys?.icon} {mostEntrys?.type}
-                </Text>
-              </View>
+              <Text style={styles.entryAmount}>
+                R$ -{mostEntrys?.totalValue.toFixed(2)}
+              </Text>
             </View>
-            <Text style={{ color: "#d80000", fontWeight: "500" }}>
-              R$ -{mostEntrys?.totalValue.toFixed(2)}
-            </Text>
+
+            {typeCounts.map((item, index) => {
+              return (
+                <View key={index}>
+                  <View style={styles.typeInfo}>
+                    <View style={styles.typeInfoContent}>
+                      <View style={styles.typeIcon}>
+                        <Text style={styles.typeIconText}>{item.icon}</Text>
+                      </View>
+                      <View style={styles.typeInfoText}>
+                        <Text style={styles.infoTitle}>{item.type}</Text>
+                        <Text style={styles.infoSubtitle}>
+                          {item.count} entrada
+                        </Text>
+                      </View>
+                    </View>
+                    <Text style={styles.typeAmount}>
+                      R$ -{item.totalValue.toFixed(2)}
+                    </Text>
+                  </View>
+                  {index < typeCounts.length - 1 && (
+                    <View style={styles.separator}></View>
+                  )}
+                </View>
+              );
+            })}
           </View>
+        </ScrollView>
+      ) : (
+        <View style={styles.noSpendingView}>
+          <Text style={styles.noSpendingText}>
+            Você não possui nenhum gasto!
+          </Text>
         </View>
-      </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
@@ -303,9 +289,154 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === "android" ? 60 : 10,
     backgroundColor: "#fff",
   },
+  content: {
+    paddingHorizontal: 20,
+  },
   monthTotalView: {
     marginTop: 60,
     flexDirection: "row",
+  },
+  currencySymbol: {
+    fontSize: 35,
+    marginTop: 6,
+    color: "#d80000",
+  },
+  minusSign: {
+    fontSize: 35,
+    marginTop: 6,
+    color: "#d80000",
+  },
+  totalInteger: {
+    fontSize: 50,
+    color: "#d80000",
+  },
+  totalCents: {
+    fontSize: 35,
+    marginTop: 6,
+    color: "#d80000",
+  },
+  totalText: {
+    fontSize: 16,
+    color: "#6B7280",
+  },
+  chartContainer: {
+    marginTop: 30,
+    flex: 1,
+    elevation: 5,
+    shadowOpacity: 0.2,
+    shadowOffset: {
+      width: 2,
+      height: 0,
+    },
+  },
+  spendingInfo: {
+    backgroundColor: "#F8FAFC",
+    marginTop: 40,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+    elevation: 5,
+    shadowOpacity: 0.2,
+    shadowOffset: {
+      width: 3,
+      height: 2,
+    },
+  },
+  spendingInfoContent: {
+    flexDirection: "row",
+  },
+  iconContainer: {
+    backgroundColor: "#FEF08A",
+    padding: 5,
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  spendingInfoText: {
+    marginLeft: 10,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: "500",
+  },
+  infoSubtitle: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#6B7280",
+  },
+  spendingAmount: {
+    color: "#d80000",
+    fontWeight: "500",
+  },
+  entryInfo: {
+    backgroundColor: "#F8FAFC",
+    marginTop: 20,
+    marginBottom: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+    elevation: 5,
+    shadowOpacity: 0.2,
+    shadowOffset: {
+      width: 3,
+      height: 2,
+    },
+  },
+  entryInfoContent: {
+    flexDirection: "row",
+  },
+  entryInfoText: {
+    marginLeft: 10,
+  },
+  entryAmount: {
+    color: "#d80000",
+    fontWeight: "500",
+  },
+  typeInfo: {
+    backgroundColor: "white",
+    marginTop: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+  },
+  typeInfoContent: {
+    flexDirection: "row",
+  },
+  typeIcon: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  typeIconText: {
+    fontSize: 25,
+  },
+  typeInfoText: {
+    marginLeft: 10,
+  },
+  typeAmount: {
+    color: "#d80000",
+    fontWeight: "500",
+  },
+  separator: {
+    borderWidth: 1,
+    width: "80%",
+    alignSelf: "center",
+    marginTop: 20,
+    borderColor: "#E5E7EB",
+  },
+  noSpendingView: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  noSpendingText: {
+    color: "red",
+    fontSize: 20,
   },
 });
 
