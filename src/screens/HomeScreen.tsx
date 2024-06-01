@@ -10,43 +10,70 @@ import {
 } from "react-native";
 import Header from "../components/Header";
 import { useSpents } from "../context/SpentContext";
+import moment from "moment";
 
-function convertToTime(isoString: string): string {
-  const date = new Date(isoString);
-  const options: Intl.DateTimeFormatOptions = {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  };
-  return date.toLocaleTimeString("en-GB", options);
+interface Spent {
+  id: string;
+  icon: string;
+  type: string;
+  value: number;
+  created_at: string;
 }
 
-const HomeScreen = () => {
-  const { monthSpents, todaySpents } = useSpents();
+const HomeScreen: React.FC = () => {
+  const { monthSpents } = useSpents();
+  const todayDate = new Date(Date.now());
+  const uniqueDays = getUniqueDays(monthSpents);
 
-  const totalSpents = (): string => {
-    let total = 0;
-    todaySpents.map((value) => {
-      total += value.value;
+  function getUniqueDays(monthSpents: Spent[]): string[] {
+    const uniqueDays = new Set<string>();
+
+    monthSpents.forEach((obj) => {
+      const date = moment(obj.created_at).format("YYYY-MM-DD");
+      uniqueDays.add(date);
     });
-    return total.toFixed(2);
+
+    const uniqueDaysArray = Array.from(uniqueDays);
+    uniqueDaysArray.sort(
+      (a, b) => new Date(b).getTime() - new Date(a).getTime()
+    );
+
+    return uniqueDaysArray;
+  }
+
+  const getSpentsByDay = (date: string): Spent[] => {
+    return monthSpents.filter(
+      (obj) => moment(obj.created_at).format("YYYY-MM-DD") === date
+    );
+  };
+
+  const totalPerDay = (date: string): number => {
+    return getSpentsByDay(date).reduce((total, item) => total + item.value, 0);
   };
 
   const totalInteger = (): number => {
-    let total = 0;
-    monthSpents.map((value) => {
-      total += value.value;
-    });
-    return ~~total;
+    return Math.floor(
+      monthSpents.reduce((total, item) => total + item.value, 0)
+    );
   };
 
   const totalCents = (): string => {
-    let total = 0;
-    monthSpents.map((value) => {
-      total += value.value;
+    const total = monthSpents.reduce((total, item) => total + item.value, 0);
+    return total.toFixed(2).split(".")[1];
+  };
+
+  const formatDateString = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("pt-BR", { month: "long", day: "numeric" });
+  };
+
+  const convertToTime = (isoString: string): string => {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
     });
-    const output = total.toFixed(2).toString().split(".")[1];
-    return output;
   };
 
   return (
@@ -58,56 +85,63 @@ const HomeScreen = () => {
       >
         <Header>GASTOS</Header>
         <View style={styles.month}>
-          <Text style={styles.monthSpentText}>Gastos esse mes</Text>
+          <Text style={styles.monthSpentText}>Gastos esse mês</Text>
           <View style={styles.monthTotalView}>
-            <Text style={{ fontSize: 35, marginTop: 6, color: "#d80000" }}>
-              R$
-            </Text>
-            <Text style={{ fontSize: 35, marginTop: 6, color: "#d80000" }}>
-              -
-            </Text>
-            <Text style={{ fontSize: 50, color: "#d80000" }}>
-              {totalInteger()}
-            </Text>
-            <Text style={{ fontSize: 35, marginTop: 6, color: "#d80000" }}>
-              .{totalCents()}
-            </Text>
+            <Text style={styles.currencySymbol}>R$</Text>
+            <Text style={styles.dash}>-</Text>
+            <Text style={styles.totalInteger}>{totalInteger()}</Text>
+            <Text style={styles.cents}>.{totalCents()}</Text>
           </View>
         </View>
 
-        <View style={styles.today}>
-          <Text style={styles.todayText}>Hoje</Text>
-          <Text style={styles.todayText}>R$ -{totalSpents()}</Text>
-        </View>
-
-        {todaySpents.length > 0 ? (
-          <FlatList
-            data={todaySpents}
-            renderItem={({ item }) => (
-              <View style={styles.card} key={item.id}>
-                <View style={styles.cardStart}>
-                  <Text style={styles.cardIcon}>{item.icon}</Text>
-                  <View style={styles.cardStartText}>
-                    <Text style={styles.cardSpent}>{item.type}</Text>
-                    <Text style={styles.cardTime}>
-                      {convertToTime(item.created_at)}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.cardEnd}>
-                  <Text style={styles.cardValue}>
-                    R$ -{item.value.toFixed(2)}
-                  </Text>
-                </View>
+        {monthSpents.length > 0 ? (
+          uniqueDays.map((date, index) => (
+            <View key={index}>
+              <View style={styles.today}>
+                <Text style={styles.todayText}>
+                  {Number.parseInt(date.split("-")[2]) === todayDate.getDate()
+                    ? "Hoje"
+                    : Number.parseInt(date.split("-")[2]) ===
+                      todayDate.getDate() - 1
+                    ? "Ontem"
+                    : formatDateString(date)}
+                </Text>
+                <Text style={styles.todayText}>
+                  R$ -{totalPerDay(date).toFixed(2)}
+                </Text>
               </View>
-            )}
-            keyExtractor={(item) => item.id}
-            scrollEnabled={false}
-          />
+              <FlatList
+                data={getSpentsByDay(date)}
+                renderItem={({ item }) => (
+                  <View style={styles.card} key={item.id}>
+                    <View style={styles.cardStart}>
+                      <Text style={styles.cardIcon}>{item.icon}</Text>
+                      <View style={styles.cardStartText}>
+                        <Text style={styles.cardSpent}>{item.type}</Text>
+                        <Text style={styles.cardTime}>
+                          {convertToTime(item.created_at)}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.cardEnd}>
+                      <Text style={styles.cardValue}>
+                        R$ -{item.value.toFixed(2)}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+                keyExtractor={(item) => item.id}
+                scrollEnabled={false}
+              />
+              {index < uniqueDays.length - 1 && (
+                <View style={styles.separator}></View>
+              )}
+            </View>
+          ))
         ) : (
-          <View style={{ alignItems: "center", marginTop: 64 }}>
-            <Text style={{ color: "#d80000" }}>
-              Você nao possui nenhum gasto!
+          <View style={styles.noSpentsView}>
+            <Text style={styles.noSpentsText}>
+              Você não possui nenhum gasto!
             </Text>
           </View>
         )}
@@ -126,6 +160,7 @@ const styles = StyleSheet.create({
     marginTop: 150,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 100,
   },
   monthSpentText: {
     color: "#3A3B3C",
@@ -135,11 +170,29 @@ const styles = StyleSheet.create({
     marginTop: 8,
     flexDirection: "row",
   },
+  currencySymbol: {
+    fontSize: 35,
+    marginTop: 6,
+    color: "#d80000",
+  },
+  dash: {
+    fontSize: 35,
+    marginTop: 6,
+    color: "#d80000",
+  },
+  totalInteger: {
+    fontSize: 50,
+    color: "#d80000",
+  },
+  cents: {
+    fontSize: 35,
+    marginTop: 6,
+    color: "#d80000",
+  },
   today: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginHorizontal: 16,
-    marginTop: 100,
   },
   todayText: {
     fontSize: 16,
@@ -175,25 +228,18 @@ const styles = StyleSheet.create({
   cardValue: {
     color: "red",
   },
-  modalBackground: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  separator: {
+    borderWidth: 1,
+    marginHorizontal: 30,
+    marginVertical: 20,
+    borderColor: "#E5E7EB",
   },
-  modalContainer: {
-    width: 300,
-    padding: 20,
-    backgroundColor: "white",
-    borderRadius: 10,
+  noSpentsView: {
     alignItems: "center",
+    marginTop: 64,
   },
-  absolute: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+  noSpentsText: {
+    color: "#d80000",
   },
 });
 

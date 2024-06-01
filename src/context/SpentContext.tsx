@@ -1,8 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
 interface SpentContextType {
-  todaySpents: any[];
-  setTodaySpents: Function;
   monthSpents: any[];
   setMonthSpents: Function;
 }
@@ -12,13 +10,10 @@ const SpentContext = createContext<SpentContextType | undefined>(undefined);
 export const SpentProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [todaySpents, setTodaySpents] = useState([]);
   const [monthSpents, setMonthSpents] = useState([]);
 
   return (
-    <SpentContext.Provider
-      value={{ todaySpents, setTodaySpents, monthSpents, setMonthSpents }}
-    >
+    <SpentContext.Provider value={{ monthSpents, setMonthSpents }}>
       {children}
     </SpentContext.Provider>
   );
