@@ -42,9 +42,12 @@ const HomeScreen: React.FC = () => {
   }
 
   const getSpentsByDay = (date: string): Spent[] => {
-    return monthSpents.filter(
-      (obj) => moment(obj.created_at).format("YYYY-MM-DD") === date
-    );
+    return monthSpents
+      .filter((obj) => moment(obj.created_at).format("YYYY-MM-DD") === date)
+      .sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
   };
 
   const totalPerDay = (date: string): number => {
