@@ -67,6 +67,7 @@ const HomeScreen: React.FC = () => {
 
   const formatDateString = (dateString: string): string => {
     const date = new Date(dateString);
+    date.setDate(date.getDate() + 1);
     return date.toLocaleDateString("pt-BR", { month: "long", day: "numeric" });
   };
 
